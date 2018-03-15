@@ -1,0 +1,81 @@
+<?php 
+class IndexAction extends Action{
+	public function index(){
+		$name= $_SESSION['username'];
+		$this->assign('name',$name);
+
+		$this->display();
+	}
+
+	public function login(){
+		if(isset($_POST['username'])){
+			$admin=M('Admin');
+			$name = $_POST['username'];
+			$psd = $_POST['password'];
+			$str =  "username = ".$name."  and password =".$psd."";
+			$row = $admin->where($str)->find();
+			if($row){
+				session_start();
+				$_SESSION['username']=$name;
+				// $_SESSION['password']=$upwd;
+				// $_SESSION['time']=$data['time'];
+				echo "0";
+				exit;
+			}else{
+				echo "1";
+				exit;
+			};
+		}
+
+		$this->display();
+	}
+
+	public function insert(){
+
+		if(isset($_POST['submit'])){
+			$uname=$_POST['username'];
+			$upwd=$_POST['password'];
+
+			$data=array(
+				'username'=>$uname,
+				'password'=>$upwd,
+				'time'=>time(),
+			);
+			$insert=M('Admin')->add($data);
+			if($insert){
+				// session_start();
+				// $_SESSION['username']=$uname;
+				// $_SESSION['password']=$upwd;
+				// $_SESSION['time']=$data['time'];
+				$this->redirect('Index/login','',0,'');
+			};
+		}
+		
+	}
+
+
+	public function reg(){
+
+		if(isset($_POST['username'])){
+			$admin=M('Admin');
+			$rows=$admin->field('username')->where("username={$_POST['username']}")->select();
+			if(is_array($rows)){
+				echo "0";
+				exit;
+			}else if($rows == 0){
+				echo "1";
+				exit;
+			}
+		}
+
+		$this->display();
+
+	}
+
+
+	public function verify(){
+		import('ORG.Util.Image');
+		Image::buildImageVerify();
+	}
+
+}
