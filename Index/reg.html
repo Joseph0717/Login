@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>login</title>
+	<link rel="stylesheet" type="text/css" href="__PUBLIC__/bs/css/bootstrap.min.css">
+	<script type="text/javascript" src="__PUBLIC__/bs/jquery.min.js"></script>
+	<script type="text/javascript" src="__PUBLIC__/bs/js/bootstrap.min.js"></script>
+</head>
+<style type="text/css">
+	.reg{
+		width: 100%;
+		height: 600px;
+		background:#e5e5e5;
+		margin-top: 100px;
+		padding-top: 100px;
+	}
+	.reg-sm{
+		width: 700px;
+		height: 400px;
+		background: #efefef;
+		margin: 0 auto;
+	}
+	.top{
+		width: 100%;
+		height:50px;
+		text-align: center;
+		line-height: 50px;
+		font-size: 20px;
+	}
+	.text{
+		width: 100%;
+		height: 60px;
+		text-align: center;
+		padding-top: 10px;
+		position: relative;
+	}
+	input{
+		width: 300px;
+		height: 40px;
+		background: white;
+		outline: none;
+		border: none;
+		padding-left: 10px;
+		border-radius: 2px;
+	}
+	.btn{
+		width: 300px;
+		height: 50px;
+		background: red;
+	}
+	span{
+		position: absolute;
+		right: 200px;
+		top: 20px;
+		display: none;
+		color: red;
+		font-size:13px;
+	}
+</style>
+
+<body>
+	<div class="reg">
+		<div class="reg-sm">
+			<div class="top">
+				注册
+			</div>
+			<form action="__URL__/insert" method="post" onSubmit="return confirm();">
+				<div class="text">
+					<input type="text" name="username" class="username" placeholder="手机或邮箱" >
+					<span class="span-1">手机或邮箱</span>
+				</div>
+
+				<div class="text">
+					<input type="password" name="password" class="password" placeholder="密码6~16位,数字/字母/字符至少两种">
+					<span class="span-2">密码6~12位,数字/字母/字符至少两种</span>
+				</div>
+
+				<div class="text">
+					<input type="password" name="repassword" class="repassword" placeholder="确认密码">
+					<span class="span-3">密码不一致</span>
+				</div>
+
+				<div class="text">
+					<button class="btn" type="submit" name="submit">
+						注册
+					</button>
+				</div>
+			</form>		
+		</div>
+	</div>
+</body>
+<script type="text/javascript">
+	check=function(){
+		$(".username").bind('input porpertychange',function(){
+			phone =$(this).val();
+			if(!(/^1[3|4|5|7|8]\d{9}$/.test(phone))){
+				$(this).next().show().text('手机或邮箱');
+			}else{
+					$(this).next().text('ok');
+				}
+		});
+
+
+		 	$('.password').bind('input porpertychange',function(){
+	 		password=$(this).val();
+	 		if($(this).val().length < 6 ){
+				$(this).next().show().text('密码6~12位,数字/字母/字符至少两种');
+	 		}else if($(this).val().length > 12){
+				$(this).next().text('密码6~12位,数字/字母/字符至少两种');
+			}else if($(this).val().length == 0){
+				$(this).next().hide();
+			}else{
+				$(this).next().text('ok');
+			}
+	 	})
+
+		 	$('.repassword').bind('input porpertychange',function(){
+	 		if($(this).val() == $('.password').val()){
+				$(this).next().text('ok');
+	 		}else{
+				$(this).next().show().text('密码不一致');
+	 		}
+	 	})
+
+
+	}
+	check();
+
+	function confirm(){
+		if($('.span-1').text() == '手机或邮箱'){
+			$('.username').focus();
+			return false;
+		}else if($('.span-1').text() == '用户已存在'){
+			$('.username').focus();
+			return false;
+		}else if($('.span-2').text() == '密码6~12位,数字/字母/字符至少两种'){
+			$('.password').focus();
+			return false;
+		}else if($('.span-3').text() == '密码不一致'){
+			$('.span-3').show();
+			$('.repassword').focus();
+			return false;
+		}else{
+			return true;
+		}
+
+	}
+
+	$(function(){
+		$('input').blur(function(){
+			$(this).css('background','#fed9d9')
+		})
+	})
+
+	$(document).ready(function(){
+		$('.username').blur(function(){
+			if($('.username').val() != ''){
+				$.post('http://localhost/mytp3/admin.php/Index/reg.html',{username:$('.username').val()},function(data){
+						if(data == 0){
+							$('.span-1').text('用户已存在');
+						}
+				})
+			}
+		})
+	})
+
+
+
+
+</script>
+</html>
